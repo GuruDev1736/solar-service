@@ -8,6 +8,26 @@ function App() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isServiceDropdownOpen, setIsServiceDropdownOpen] = useState(false)
   const [isSolutionsDropdownOpen, setIsSolutionsDropdownOpen] = useState(false)
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false)
+  const [selectedService, setSelectedService] = useState('')
+  const [serviceFormData, setServiceFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
+    housingSocietyName: '',
+    pincode: '',
+    whatsapp: '',
+    monthlyBill: '',
+    designation: '',
+    agmApproval: '',
+    agreeToTerms: false,
+    installationAddress: '',
+    solarSystemSize: '',
+    maintenanceType: [] as string[],
+    preferredDateTime: '',
+    issuePhoto: null as File | null
+  })
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -97,6 +117,63 @@ function App() {
     setFormData({ name: '', email: '', phone: '', message: '' })
   }
 
+  const handleServiceModalOpen = (serviceName: string) => {
+    setSelectedService(serviceName)
+    setIsServiceModalOpen(true)
+  }
+
+  const handleServiceModalClose = () => {
+    setIsServiceModalOpen(false)
+    setSelectedService('')
+    setServiceFormData({ 
+      name: '', 
+      email: '', 
+      phone: '', 
+      message: '',
+      housingSocietyName: '',
+      pincode: '',
+      whatsapp: '',
+      monthlyBill: '',
+      designation: '',
+      agmApproval: '',
+      agreeToTerms: false,
+      installationAddress: '',
+      solarSystemSize: '',
+      maintenanceType: [],
+      preferredDateTime: '',
+      issuePhoto: null
+    })
+  }
+
+  const handleServiceInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const target = e.target as HTMLInputElement
+    
+    if (target.type === 'file') {
+      const file = target.files?.[0] || null
+      setServiceFormData({ ...serviceFormData, issuePhoto: file })
+    } else if (target.type === 'checkbox' && target.name === 'maintenanceType') {
+      const types = serviceFormData.maintenanceType
+      if (target.checked) {
+        setServiceFormData({ ...serviceFormData, maintenanceType: [...types, target.value] })
+      } else {
+        setServiceFormData({ ...serviceFormData, maintenanceType: types.filter(t => t !== target.value) })
+      }
+    } else {
+      const value = target.type === 'checkbox' ? target.checked : target.value
+      setServiceFormData({ ...serviceFormData, [target.name]: value })
+    }
+  }
+
+  const handleServiceSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (selectedService === 'Housing Solar' && !serviceFormData.agreeToTerms) {
+      alert('Please agree to the terms of service and privacy policy')
+      return
+    }
+    alert(`Thank you for your ${selectedService} inquiry! We will contact you soon.`)
+    handleServiceModalClose()
+  }
+
   // Removed unused handlers - forms are on individual service pages
 
   return (
@@ -120,11 +197,11 @@ function App() {
           <ul className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
             <li><a onClick={() => scrollToSection('home')} className={activeSection === 'home' ? 'active' : ''}>Home</a></li>
             <li className="dropdown" onMouseEnter={() => setIsServiceDropdownOpen(true)} onMouseLeave={() => setIsServiceDropdownOpen(false)}>
-              <a className={['commercial', 'housing', 'maintenance'].includes(activeSection) ? 'active' : ''}>Service ▾</a>
+              <a onClick={() => scrollToSection('services')} className={activeSection === 'services' ? 'active' : ''}>Service ▾</a>
               <ul className={`dropdown-menu ${isServiceDropdownOpen ? 'show' : ''}`}>
-                <li><Link to="/services/commercial" onClick={() => setIsMenuOpen(false)}>Commercial</Link></li>
-                <li><Link to="/services/housing" onClick={() => setIsMenuOpen(false)}>Housing</Link></li>
-                <li><Link to="/services/maintenance" onClick={() => setIsMenuOpen(false)}>Maintenance</Link></li>
+                <li><a onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }}>Commercial</a></li>
+                <li><a onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }}>Housing</a></li>
+                <li><a onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }}>Maintenance</a></li>
               </ul>
             </li>
             <li className="dropdown" onMouseEnter={() => setIsSolutionsDropdownOpen(true)} onMouseLeave={() => setIsSolutionsDropdownOpen(false)}>
@@ -214,27 +291,27 @@ function App() {
               <div className="service-icon">🏢</div>
               <h3>Commercial Solar</h3>
               <p>Industrial-grade solar solutions for businesses, offices, and factories. Maximize savings and reduce operating costs.</p>
-              <Link to="/services/commercial" className="service-btn">
+              <button onClick={() => handleServiceModalOpen('Commercial Solar')} className="service-btn">
                 Learn More →
-              </Link>
+              </button>
             </div>
 
             <div className="service-card">
               <div className="service-icon">🏠</div>
               <h3>Housing Solar</h3>
               <p>Residential solar systems for homes and housing societies. Power your home with clean, renewable energy.</p>
-              <Link to="/services/housing" className="service-btn">
+              <button onClick={() => handleServiceModalOpen('Housing Solar')} className="service-btn">
                 Learn More →
-              </Link>
+              </button>
             </div>
 
             <div className="service-card">
               <div className="service-icon">🔧</div>
               <h3>Maintenance Service</h3>
               <p>Professional maintenance and support for your solar systems. Keep your panels running at peak efficiency.</p>
-              <Link to="/services/maintenance" className="service-btn">
+              <button onClick={() => handleServiceModalOpen('Maintenance Service')} className="service-btn">
                 Learn More →
-              </Link>
+              </button>
             </div>
           </div>
         </div>
@@ -452,17 +529,6 @@ function App() {
                   </div>
                 </div>
               </div>
-
-              <div className="benefits-list">
-                <h3>What you get:</h3>
-                <ul>
-                  <li>✓ Free site inspection</li>
-                  <li>✓ Customized solar design</li>
-                  <li>✓ Detailed cost analysis</li>
-                  <li>✓ Subsidy assistance</li>
-                  <li>✓ No obligation quote</li>
-                </ul>
-              </div>
             </div>
 
             <div className="contact-form-wrapper">
@@ -561,12 +627,354 @@ function App() {
           <div className="footer-bottom">
             <p>&copy; 2026 Optimum Solar Services. All rights reserved. | Proudly made in India ❤️</p>
             <div className="footer-links">
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
+              <a href="/privacy-policy">Privacy Policy</a>
+              <a href="/terms-and-conditions">Terms of Service</a>
             </div>
           </div>
         </div>
       </footer>
+
+      {/* Service Modal */}
+      {isServiceModalOpen && (
+        <div className="modal-overlay" onClick={handleServiceModalClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={handleServiceModalClose}>&times;</button>
+            <h2>Request {selectedService} Information</h2>
+            <form onSubmit={handleServiceSubmit} className="modal-form">
+              {selectedService === 'Housing Solar' ? (
+                <>
+                  <div className="form-group">
+                    <label>Full Name <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Full Name"
+                      value={serviceFormData.name}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Name of Housing Society <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="text"
+                      name="housingSocietyName"
+                      placeholder="Housing Society Name"
+                      value={serviceFormData.housingSocietyName}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Pin code <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="text"
+                      name="pincode"
+                      placeholder="Pin code"
+                      value={serviceFormData.pincode}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>WhatsApp number <span style={{ color: 'red' }}>*</span></label>
+                      <input
+                        type="tel"
+                        name="whatsapp"
+                        placeholder="WhatsApp number"
+                        value={serviceFormData.whatsapp}
+                        onChange={handleServiceInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Monthly Electricity Bill <span style={{ color: 'red' }}>*</span></label>
+                      <select
+                        name="monthlyBill"
+                        value={serviceFormData.monthlyBill}
+                        onChange={handleServiceInputChange}
+                        required
+                      >
+                        <option value="">Select Bill Range</option>
+                        <option value="0-5000">0 - 5000</option>
+                        <option value="5000-10000">5000 - 10000</option>
+                        <option value="10000-20000">10000 - 20000</option>
+                        <option value="20000-50000">20000 - 50000</option>
+                        <option value="50000+">50000+</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>What is your designation in Housing Society? <span style={{ color: 'red' }}>*</span></label>
+                    <div className="radio-group">
+                      <label className="radio-label">
+                        <input
+                          type="radio"
+                          name="designation"
+                          value="Management committee member"
+                          checked={serviceFormData.designation === 'Management committee member'}
+                          onChange={handleServiceInputChange}
+                          required
+                        />
+                        <span>Management committee member</span>
+                      </label>
+                      <label className="radio-label">
+                        <input
+                          type="radio"
+                          name="designation"
+                          value="Resident"
+                          checked={serviceFormData.designation === 'Resident'}
+                          onChange={handleServiceInputChange}
+                        />
+                        <span>Resident</span>
+                      </label>
+                      <label className="radio-label">
+                        <input
+                          type="radio"
+                          name="designation"
+                          value="Builder"
+                          checked={serviceFormData.designation === 'Builder'}
+                          onChange={handleServiceInputChange}
+                        />
+                        <span>Builder</span>
+                      </label>
+                      <label className="radio-label">
+                        <input
+                          type="radio"
+                          name="designation"
+                          value="Facility Manager"
+                          checked={serviceFormData.designation === 'Facility Manager'}
+                          onChange={handleServiceInputChange}
+                        />
+                        <span>Facility Manager</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>AGM approval status <span style={{ color: 'red' }}>*</span></label>
+                    <select
+                      name="agmApproval"
+                      value={serviceFormData.agmApproval}
+                      onChange={handleServiceInputChange}
+                      required
+                    >
+                      <option value="">Select Approval Status</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Not Required">Not Required</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        name="agreeToTerms"
+                        checked={serviceFormData.agreeToTerms}
+                        onChange={handleServiceInputChange}
+                        required
+                      />
+                      I agree to Optimum Solar Services's <a href="/terms-and-conditions" target="_blank">terms of service</a> & <a href="/privacy-policy" target="_blank">privacy policy</a>
+                    </label>
+                  </div>
+
+                  <button type="submit" className="btn btn-primary">Submit Details</button>
+                </>
+              ) : selectedService === 'Maintenance Service' ? (
+                <>
+                  <div className="form-group">
+                    <label>Customer Name <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Full Name"
+                      value={serviceFormData.name}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Pincode <span style={{ color: 'red' }}>*</span></label>
+                      <input
+                        type="text"
+                        name="pincode"
+                        placeholder="Pincode"
+                        value={serviceFormData.pincode}
+                        onChange={handleServiceInputChange}
+                        required
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Email <span style={{ color: 'red' }}>*</span></label>
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        value={serviceFormData.email}
+                        onChange={handleServiceInputChange}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Phone <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Phone Number"
+                      value={serviceFormData.phone}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Installation Address <span style={{ color: 'red' }}>*</span></label>
+                    <textarea
+                      name="installationAddress"
+                      placeholder="Installation Address"
+                      value={serviceFormData.installationAddress}
+                      onChange={handleServiceInputChange}
+                      rows={2}
+                      required
+                    ></textarea>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Solar System Size / Panel Count <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="text"
+                      name="solarSystemSize"
+                      placeholder="e.g., 5kW or 20 panels"
+                      value={serviceFormData.solarSystemSize}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Type of Maintenance Needed <span style={{ color: 'red' }}>*</span></label>
+                    <div className="checkbox-group">
+                      <label className="checkbox-label-inline">
+                        <input
+                          type="checkbox"
+                          name="maintenanceType"
+                          value="Cleaning"
+                          checked={serviceFormData.maintenanceType.includes('Cleaning')}
+                          onChange={handleServiceInputChange}
+                        />
+                        Cleaning
+                      </label>
+                      <label className="checkbox-label-inline">
+                        <input
+                          type="checkbox"
+                          name="maintenanceType"
+                          value="Repair"
+                          checked={serviceFormData.maintenanceType.includes('Repair')}
+                          onChange={handleServiceInputChange}
+                        />
+                        Repair
+                      </label>
+                      <label className="checkbox-label-inline">
+                        <input
+                          type="checkbox"
+                          name="maintenanceType"
+                          value="Inspection"
+                          checked={serviceFormData.maintenanceType.includes('Inspection')}
+                          onChange={handleServiceInputChange}
+                        />
+                        Inspection
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Preferred Time & Date <span style={{ color: 'red' }}>*</span></label>
+                    <input
+                      type="datetime-local"
+                      name="preferredDateTime"
+                      value={serviceFormData.preferredDateTime}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Upload Photo of Issue</label>
+                    <input
+                      type="file"
+                      name="issuePhoto"
+                      accept="image/*"
+                      onChange={handleServiceInputChange}
+                      className="file-input"
+                    />
+                  </div>
+
+                  <button type="submit" className="btn btn-primary">Submit</button>
+                </>
+              ) : (
+                <>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Your Name"
+                      value={serviceFormData.name}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Your Email"
+                      value={serviceFormData.email}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Your Phone Number"
+                      value={serviceFormData.phone}
+                      onChange={handleServiceInputChange}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <textarea
+                      name="message"
+                      placeholder="Tell us about your requirements"
+                      value={serviceFormData.message}
+                      onChange={handleServiceInputChange}
+                      rows={4}
+                    ></textarea>
+                  </div>
+                  
+                  <button type="submit" className="btn btn-primary">Submit Request</button>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

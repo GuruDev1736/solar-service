@@ -1,28 +1,7 @@
-import { useState } from 'react'
 import Navbar from '../components/Navbar'
 import '../styles/ServicePage.css'
 
 function OffGridSolar() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    location: '',
-    systemSize: '',
-    message: ''
-  })
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    alert('Thank you for your Off-Grid Solar inquiry! We will contact you soon.')
-    setFormData({ name: '', email: '', phone: '', location: '', systemSize: '', message: '' })
-  }
-
   return (
     <div className="service-page">
       <Navbar />
@@ -283,80 +262,6 @@ function OffGridSolar() {
               <p>Remote Location Setup</p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="service-form-section">
-        <div className="form-container">
-          <h2>Get Your Free Off-Grid Solar Consultation</h2>
-          <p className="form-subtitle">Our experts will help design the perfect off-grid system for your needs</p>
-          <form className="quote-form" onSubmit={handleSubmit}>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Name <span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Email <span className="required">*</span></label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="form-group">
-                <label>Phone Number <span className="required">*</span></label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label>Location <span className="required">*</span></label>
-                <input
-                  type="text"
-                  name="location"
-                  value={formData.location}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label>Estimated System Size (kW)</label>
-              <input
-                type="text"
-                name="systemSize"
-                value={formData.systemSize}
-                onChange={handleInputChange}
-                placeholder="e.g., 5 kW, 10 kW"
-              />
-            </div>
-            <div className="form-group">
-              <label>Additional Requirements</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleInputChange}
-                rows={4}
-                placeholder="Tell us about your energy needs and requirements"
-              ></textarea>
-            </div>
-            <button type="submit" className="submit-btn">Request Free Consultation</button>
-          </form>
         </div>
       </section>
     </div>

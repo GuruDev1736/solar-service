@@ -40,33 +40,33 @@ function Navbar() {
             onMouseEnter={() => setIsServiceDropdownOpen(true)} 
             onMouseLeave={() => setIsServiceDropdownOpen(false)}
           >
-            <span className={location.pathname.includes('/services/') ? 'active' : ''}>
+            <a href="/#services">
               Service ▾
-            </span>
+            </a>
             <ul className={`dropdown-menu ${isServiceDropdownOpen ? 'show' : ''}`}>
               <li>
-                <Link 
-                  to="/services/commercial"
+                <a 
+                  href="/#services"
                   onClick={() => { setIsMenuOpen(false); setIsServiceDropdownOpen(false); }}
                 >
                   Commercial
-                </Link>
+                </a>
               </li>
               <li>
-                <Link 
-                  to="/services/housing"
+                <a 
+                  href="/#services"
                   onClick={() => { setIsMenuOpen(false); setIsServiceDropdownOpen(false); }}
                 >
                   Housing
-                </Link>
+                </a>
               </li>
               <li>
-                <Link 
-                  to="/services/maintenance"
+                <a 
+                  href="/#services"
                   onClick={() => { setIsMenuOpen(false); setIsServiceDropdownOpen(false); }}
                 >
                   Maintenance
-                </Link>
+                </a>
               </li>
             </ul>
           </li>
