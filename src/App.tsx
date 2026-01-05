@@ -14,22 +14,6 @@ function App() {
     phone: '',
     message: ''
   })
-  const [serviceFormData, setServiceFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    service: '',
-    message: ''
-  })
-  const [commercialFormData, setCommercialFormData] = useState({
-    name: '',
-    companyName: '',
-    whatsapp: '',
-    city: '',
-    pincode: '',
-    monthlyBill: '',
-    agreeToTerms: false
-  })
 
   const slides = [
     {
@@ -113,41 +97,7 @@ function App() {
     setFormData({ name: '', email: '', phone: '', message: '' })
   }
 
-  const handleServiceInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setServiceFormData({ ...serviceFormData, [e.target.name]: e.target.value })
-  }
-
-  const handleServiceSubmit = (e: React.FormEvent, serviceName: string) => {
-    e.preventDefault()
-    alert(`Thank you for your ${serviceName} service inquiry! We will contact you soon.`)
-    setServiceFormData({ name: '', email: '', phone: '', service: serviceName, message: '' })
-  }
-
-  const handleCommercialInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target
-    setCommercialFormData({ 
-      ...commercialFormData, 
-      [name]: type === 'checkbox' ? checked : value 
-    })
-  }
-
-  const handleCommercialSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!commercialFormData.agreeToTerms) {
-      alert('Please agree to the terms of service and privacy policy')
-      return
-    }
-    alert('Thank you for your Commercial Solar inquiry! We will contact you soon.')
-    setCommercialFormData({ 
-      name: '', 
-      companyName: '', 
-      whatsapp: '', 
-      city: '', 
-      pincode: '', 
-      monthlyBill: '', 
-      agreeToTerms: false 
-    })
-  }
+  // Removed unused handlers - forms are on individual service pages
 
   return (
     <div className="app">
@@ -338,7 +288,7 @@ function App() {
           <div className="features-grid">
             <div className="feature">
               <div className="feature-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" alt="Quality" />
+                <img src="/Premium-Quality.png" alt="Quality" />
               </div>
               <h3>Premium Quality</h3>
               <p>Top-tier solar panels from trusted manufacturers with 25+ years performance warranty</p>
@@ -346,7 +296,7 @@ function App() {
             
             <div className="feature">
               <div className="feature-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/2331/2331966.png" alt="Pricing" />
+                <img src="/best-price.png" alt="Pricing" />
               </div>
               <h3>Best Pricing</h3>
               <p>Transparent pricing with no hidden costs. Get the best value for your investment</p>
@@ -354,7 +304,7 @@ function App() {
             
             <div className="feature">
               <div className="feature-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png" alt="Installation" />
+                <img src="/installation.png" alt="Installation" />
               </div>
               <h3>Quick Installation</h3>
               <p>Professional installation completed in just 2-3 days with minimal disruption</p>
@@ -362,7 +312,7 @@ function App() {
             
             <div className="feature">
               <div className="feature-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" alt="Maintenance" />
+                <img src="/maintanance.png" alt="Maintenance" />
               </div>
               <h3>Free Maintenance</h3>
               <p>Regular cleaning and maintenance included. We ensure optimal performance year-round</p>
@@ -370,7 +320,7 @@ function App() {
             
             <div className="feature">
               <div className="feature-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/3502/3502601.png" alt="Subsidy" />
+                <img src="/subsicdy.png" alt="Subsidy" />
               </div>
               <h3>Subsidy Assistance</h3>
               <p>Complete support with government subsidy applications and documentation</p>
@@ -378,7 +328,7 @@ function App() {
             
             <div className="feature">
               <div className="feature-icon">
-                <img src="https://cdn-icons-png.flaticon.com/512/3524/3524336.png" alt="Support" />
+                <img src="/support.png" alt="Support" />
               </div>
               <h3>24/7 Support</h3>
               <p>Dedicated customer support team available round the clock for all your queries</p>
@@ -576,12 +526,6 @@ function App() {
                 <img src="/logo.png" alt="Optimum Solar Services" className="footer-logo-image" />
               </div>
               <p>Rooftop solar made simple. We don't just sell solar — we give you peace of mind.</p>
-              <div className="social-links">
-                <a href="#" aria-label="Facebook">📘</a>
-                <a href="#" aria-label="Instagram">📷</a>
-                <a href="#" aria-label="LinkedIn">💼</a>
-                <a href="#" aria-label="YouTube">📹</a>
-              </div>
             </div>
 
             <div className="footer-section">
@@ -607,7 +551,7 @@ function App() {
             <div className="footer-section">
               <h4>Contact Info</h4>
               <ul>
-                <li>📞 +91 98300 03000</li>
+                <li>📞 +91 9697986644</li>
                 <li>✉️ info@optimumsolarservices.in</li>
                 <li>📍 Pan India Service</li>
               </ul>
